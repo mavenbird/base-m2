@@ -1,0 +1,9 @@
+.admin__menu .level-0.item-menu > a:before {
+    background: url(../images/mb-icon.svg) center center no-repeat;
+    display: block;
+    margin-right: 1px;
+    content: "";
+    background-size: 24px auto;
+    width: auto;
+    height: 22px;
+}

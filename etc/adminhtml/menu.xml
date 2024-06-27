@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Mavenbird_Base::menu" title="Mavenbird" module="Mavenbird_Base" sortOrder="50" resource="Mavenbird_Base::menu"/>
+    </menu>
+</config>

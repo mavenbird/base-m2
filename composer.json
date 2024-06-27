@@ -1,0 +1,38 @@
+{
+    "name": "mavenbird/module-base",
+    "description": "Mavenbird Base for Magento 2",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "require": {
+        "mavenbird/module-import-export-importexportcategories": "~1.0",
+        "mavenbird/module-import-export-cms-blocks": "~1.0",
+        "mavenbird/module-import-export-cms-pages": "~1.0*",
+        "mavenbird/module-importexportnewslettersubscribers": "~1.0",
+        "mavenbird/module-importexport-orders": "~1.0",
+        "mavenbird/importexportproducts-magento2": "~1.0",
+        "mavenbird/module-import-export-products-importexportproductattributes": "~1.0",
+        "mavenbird/module-import-export-product-importexportproductreviews": "~1.0",
+        "mavenbird/module-importexporturlrewrites": "~1.0",
+        "mavenbird/module-importexportwishlistproducts": "~1.0",
+        "mavenbird/module-mini-cart-coupon": "~1.0",
+        "mavenbird/customordernumberbase": "~1.0"
+    },
+    "license": "proprietary",
+    "authors": [
+      {
+        "name": "Mavenbird",
+        "email": "support@mavenbird.com",
+        "homepage": "https://www.mavenbird.com",
+        "role": "Technical Support"
+      }
+    ],
+    "autoload": {
+      "files": [
+        "registration.php"
+      ],
+      "psr-4": {
+        "Mavenbird\\Base\\": ""
+      }
+    }
+  }
+  
