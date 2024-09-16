@@ -1,14 +1,24 @@
 <?xml version="1.0"?>
 <!--
 /**
- * @author MageMoto Commerce Team
- * @copyright Copyright (c) 2020 MageMoto Commerce (https://www.magemoto.com)
+ * Mavenbird Technologies Private Limited
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://mavenbird.com/Mavenbird-Module-License.txt
+ *
+ * =================================================================
+ *
+ * @category   Mavenbird
+ * @package    Mavenbird_Core
+ * @author     Mavenbird Team
+ * @copyright  Copyright (c) 2018-2024 Mavenbird Technologies Private Limited ( http://mavenbird.com )
+ * @license    http://mavenbird.com/Mavenbird-Module-License.txt
  */
 -->
-
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>

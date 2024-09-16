@@ -1,14 +1,24 @@
 <?php
 /**
- * @author Mavenbird Commerce Team
- * @copyright Copyright (c) 2020 MageMoto Commerce (https://www.magemoto.com)
+ * Mavenbird Technologies Private Limited
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://mavenbird.com/Mavenbird-Module-License.txt
+ *
+ * =================================================================
+ *
+ * @category   Mavenbird
+ * @package    Mavenbird_Core
+ * @author     Mavenbird Team
+ * @copyright  Copyright (c) 2018-2024 Mavenbird Technologies Private Limited ( http://mavenbird.com )
+ * @license    http://mavenbird.com/Mavenbird-Module-License.txt
  */
 
-
-namespace Mavenbird\Core\Plugin\Backend\Block;
+ namespace Mavenbird\Core\Plugin\Backend\Block;
 
 use Magento\Backend\Block\Menu as NativeMenu;
 

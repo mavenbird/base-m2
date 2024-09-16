@@ -1,23 +1,27 @@
 <?xml version="1.0"?>
 <!--
-
-MageMoto 
-
-@category   MageMoto
-@package    MageMoto_Core
-@copyright  Copyright © 2006-2018 MageMoto (https://www.magemoto.com)
-@license    https://www.magemoto.com/magento-extension-license/ 
-
+/**
+ * Mavenbird Technologies Private Limited
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://mavenbird.com/Mavenbird-Module-License.txt
+ *
+ * =================================================================
+ *
+ * @category   Mavenbird
+ * @package    Mavenbird_Core
+ * @author     Mavenbird Team
+ * @copyright  Copyright (c) 2018-2024 Mavenbird Technologies Private Limited ( http://mavenbird.com )
+ * @license    http://mavenbird.com/Mavenbird-Module-License.txt
+ */ 
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../Magento/Backend/etc/menu.xsd">
     <menu>
         <update id="Magento_Backend::mbmenu" title="Mavenbird" module="Magento_Backend" sortOrder="10" resource="Magento_Backend::mbmenu" />
-        <!-- <add id="Mavenbird_Core::menu"
-             title="Mavenbird"
-             module="Mavenbird_Core"
-             translate="title"
-             sortOrder="69"
-             resource="Mavenbird_Core::menu"/> -->
         <add id="Mavenbird_Core::extensions"
              title="Modules &amp; Notifications"
              module="Mavenbird_Core"
