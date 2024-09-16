@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author MageMoto Commerce Team
+ * @copyright Copyright (c) 2020 MageMoto Commerce (https://www.magemoto.com)
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <mavenbird_core>
+            <notifications>
+                <type>INFO,PROMO,INSTALLED_UPDATE,TIPS_TRICKS</type>
+                <frequency>5</frequency>
+                <ads_enable>1</ads_enable>
+            </notifications>
+            <menu>
+                <enable>1</enable>
+            </menu>
+        </mavenbird_core>
+    </default>
+</config>

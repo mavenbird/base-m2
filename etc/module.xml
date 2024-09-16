@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * MageMoto 
+ * 
+ * @category   MageMoto
+ * @package    MageMoto_Core
+ * @copyright  Copyright © 2006-2018 MageMoto (https://www.magemoto.com)
+ * @license    https://www.magemoto.com/magento-extension-license/
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/Module/etc/module.xsd">
+	<module name="Mavenbird_Core" setup_version="1.0.0"></module>
+</config>

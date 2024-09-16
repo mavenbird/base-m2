@@ -1,0 +1,164 @@
+.config-nav-block.mavenbird-tab strong:before {
+    background: url(../images/logo.svg) no-repeat;
+    width: 16px;
+    height: 16px;
+    content: '';
+    display: inline-block;
+    margin-right: 12px;
+    vertical-align: bottom;
+}
+
+.admin__menu [data-ui-id^="menu-mavenbird-"] .submenu-group-title span:before,
+.admin__menu [data-ui-id^="menu-magento-"] [data-ui-id^="menu-magento-"] [data-ui-id^="menu-mavenbird-"] span:before {
+    background: url(../images/logo-menu.svg) no-repeat;
+    width: 16px;
+    height: 19px;
+    content: '';
+    display: inline-block;
+    margin-right: 12px;
+    vertical-align: top;
+}
+
+#mavenbird_base_extensions table td.value,
+#mavenbird_base_information table td.value {
+    vertical-align: bottom;
+}
+
+.core-grid-message {
+    padding-left: 58px;
+    min-height: 53px;
+    background: url(../images/logo_m_table.png) no-repeat;
+}
+
+.core-grid-message.mavenbird-grid-logo {
+    background: url(../images/logo_table.svg) no-repeat;
+}
+
+.admin__action-dropdown-menu .notifications-entry:not(.notifications-entry-last) {
+    padding-left: 37px;
+    background: url(../images/logo_m_popup.png) no-repeat 5px 7px;
+}
+
+.admin__action-dropdown-menu .notifications-entry[data-core-logo="1"] {
+    background: url(../images/logo_popup.svg) no-repeat 5px 7px;
+}
+
+/* main mavenbird menu start*/
+#menu-magento-backend-mbmenu .submenu .level-0 > a:before,
+#menu-magento-backend-mbmenu .level-0:first-child > a:after {
+    content: '';
+    display: none;
+}
+
+#menu-magento-backend-mbmenu .submenu .level-1,
+#menu-magento-backend-mbmenu .submenu .level-0 {
+    margin-right: 15px;
+}
+
+#menu-magento-backend-mbmenu .submenu .level-0._show > a {
+    color: #fff;
+    font-weight: 700;
+}
+
+#menu-magento-backend-mbmenu .submenu .level-1 > a:hover {
+    background-color: #524d49;
+    color: #fff;
+}
+
+#menu-magento-backend-mbmenu .submenu .level-1 > a,
+#menu-magento-backend-mbmenu .submenu .level-0 > a {
+    display: block;
+    margin: .7rem 0;
+    padding: 1rem 1.5rem;
+    min-height: 0;
+    width: 99%;
+    color: #a79d95;
+    text-align: left;
+    text-transform: none;
+    font-weight: 400;
+    font-size: 14px;
+}
+
+#menu-magento-backend-mbmenu .submenu .level-1 {
+    margin-left: 0;
+}
+
+.item-extensions a,
+.item-marketplace a {
+    color: #fff!important;
+    font-weight: 600!important;
+}
+
+#menu-magento-backend-mbmenu .submenu .column {
+    min-width: 22rem;
+}
+
+#menu-magento-backend-mbmenu .submenu .column > ul {
+    overflow-y: auto;
+    margin-right: 15px;
+    max-height: 650px;
+    scrollbar-color: #a79d95;
+    scrollbar-width: thin;
+}
+
+#menu-magento-backend-mbmenu .submenu .column > ul::-webkit-scrollbar {
+    width: 3px;
+}
+
+#menu-magento-backend-mbmenu .submenu .column > ul::-webkit-scrollbar-track {
+    width: 3px;
+    background: #a79d95;
+}
+
+#menu-magento-backend-mbmenu .submenu .column > ul::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: #fff;
+}
+
+#menu-magento-backend-mbmenu .submenu .level-0 > a:hover {
+    background-color: #524d49;
+}
+
+#menu-magento-backend-mbmenu .submenu .column .parent {
+    margin-bottom: 0;
+}
+
+#menu-magento-backend-mbmenu .submenu .parent {
+    margin-bottom: 0.5rem;
+}
+
+#menu-magento-backend-mbmenu .item-container .submenu {
+    transform: none;
+    opacity: 0;
+    transition-property: opacity;
+}
+
+#menu-magento-backend-mbmenu .item-container._show .submenu {
+    opacity: 1;
+}
+
+#menu-magento-backend-mbmenu > a:before {
+    content: '';
+    background:  url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjYiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNiAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTI2IDBIMTguNzUzNlYxLjQ5MzM5QzE3LjAzNyAwLjU0MTk1NSAxNS4wNjA2IDAgMTIuOTU2NSAwQzYuMzYyMzIgMCAxIDUuMzgxODIgMSAxMkMxIDE4LjYxODIgNi4zNjIzMiAyNCAxMi45NTY1IDI0QzE1LjA1ODcgMjQgMTcuMDM1NyAyMy40NTMxIDE4Ljc1MzYgMjIuNDkzNVYyNEgyNlYwWk03LjM0MDU4IDEyQzcuMzQwNTggMTUuMTI3MyA5Ljg3NjgxIDE3LjYzNjQgMTIuOTU2NSAxNy42MzY0QzE2LjA3MjUgMTcuNjM2NCAxOC41NzI1IDE1LjEyNzMgMTguNTcyNSAxMkMxOC41NzI1IDguODcyNzMgMTYuMDcyNSA2LjM2MzY0IDEyLjk1NjUgNi4zNjM2NEM5Ljg3NjgxIDYuMzYzNjQgNy4zNDA1OCA4Ljg3MjczIDcuMzQwNTggMTJaIiBmaWxsPSIjQUFBNTlGIi8+PHBhdGggZD0iTTcgMTdIMFYyNEg3VjE3WiIgZmlsbD0iIzU3NTc1NyIvPjwvc3ZnPg==) no-repeat center;
+    background-size: contain;
+}
+
+#menu-magento-backend-mbmenu > a:hover:before,
+#menu-magento-backend-mbmenu._show > a:before {
+    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjYiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNiAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTI2IDBIMTguNzUzNlYxLjQ5MzM5QzE3LjAzNyAwLjU0MTk1NSAxNS4wNjA2IDAgMTIuOTU2NSAwQzYuMzYyMzIgMCAxIDUuMzgxODIgMSAxMkMxIDE4LjYxODIgNi4zNjIzMiAyNCAxMi45NTY1IDI0QzE1LjA1ODcgMjQgMTcuMDM1NyAyMy40NTMxIDE4Ljc1MzYgMjIuNDkzNVYyNEgyNlYwWk03LjM0MDU4IDEyQzcuMzQwNTggMTUuMTI3MyA5Ljg3NjgxIDE3LjYzNjQgMTIuOTU2NSAxNy42MzY0QzE2LjA3MjUgMTcuNjM2NCAxOC41NzI1IDE1LjEyNzMgMTguNTcyNSAxMkMxOC41NzI1IDguODcyNzMgMTYuMDcyNSA2LjM2MzY0IDEyLjk1NjUgNi4zNjM2NEM5Ljg3NjgxIDYuMzYzNjQgNy4zNDA1OCA4Ljg3MjczIDcuMzQwNTggMTJaIiBmaWxsPSIjRkNGQ0ZDIi8+PHBhdGggZD0iTTcgMTdIMFYyNEg3VjE3WiIgZmlsbD0iIzU3NTc1NyIvPjwvc3ZnPg==) no-repeat center;
+    background-size: contain;
+}
+
+.admin__menu .level-0 > .submenu {
+    min-height: calc(7.5rem + 2rem + 100%);
+}
+
+.admin__menu .level-0 > .submenu .submenu {
+    min-width: 253px;
+    min-height: 100%;
+}
+
+.admin__menu .submenu .submenu .submenu-title {
+    height: 60px;
+}
+/* main mavenbird menu end*/

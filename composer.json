@@ -1,0 +1,26 @@
+{
+    "name": "mavenbird/module-core",
+    "description": "Magento 2 core module providing shared functionality and utilities for Mavenbird extensions.",
+    "require": {
+        "php": ">=8.0.0"
+    },
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Mavenbird",
+            "email": "support@mavenbird.com",
+            "homepage": "https://www.mavenbird.com",
+            "role": "Technical Support"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Mavenbird\\Core\\": ""
+        }
+    }
+}
