@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="mavenbird" translate="label" sortOrder="10">
+            <label>Mavenbird</label>
+        </tab>
+        <section id="mavenbird_core" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Modules &amp; Notifications</label>
+            <tab>mavenbird</tab>
+            <resource>Mavenbird_Core::config</resource>
+             <group id="license" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>License Configuration</label>
+                <field id="key" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>License Key</label>
+                    <comment>Please enter your license key here</comment>
+                </field>
+            </group>
+            <group id="module_info" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Module Versions</label>            
+                <field id="core_version" translate="label" type="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Installed Modules</label>
+                    <frontend_model>Mavenbird\Core\Block\Adminhtml\System\Config\ModuleVersion</frontend_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
