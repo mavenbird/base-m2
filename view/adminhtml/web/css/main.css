@@ -167,4 +167,7 @@
 .admin__menu .submenu .submenu .submenu-title {
     height: 60px;
 }
+.accordion .form-inline table.admin__table-secondary td { padding: 12px; }
+.accordion table.admin__table-secondary thead th { padding: 12px; }
+
 /* main mavenbird menu end*/
