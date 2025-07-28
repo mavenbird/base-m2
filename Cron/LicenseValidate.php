@@ -91,7 +91,7 @@ class LicenseValidate
 
                 $this->logger->debug("License API payload for $moduleName: " . json_encode($payload));
 
-                $apiUrl = 'https://app.mavenbird.test/rest/V1/license/validate';
+                $apiUrl = 'https://mbdev.magemoto.com/rest/V1/license/validate';
 
                 $this->curl->addHeader("Content-Type", "application/json");
                 $this->curl->post($apiUrl, json_encode($payload));
@@ -139,7 +139,7 @@ class LicenseValidate
         foreach ($mavenbirdModules as $moduleName) {
             $configPath = 'mavenbird_license_status/' . strtolower($moduleName);
             $statusJson = $this->scopeConfig->getValue($configPath);
-            $statusData = json_decode($statusJson, true) ?? [];
+            $statusData = is_string($statusJson) ? json_decode($statusJson, true) : [];
             $status = $statusData['status'] ?? 'unknown';
             $attemptCount = isset($statusData['attempt_count']) ? (int)$statusData['attempt_count'] : null;
             $attemptText = $attemptCount ? " ({$attemptCount} attempts)" : '';
