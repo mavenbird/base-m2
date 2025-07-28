@@ -8,15 +8,12 @@
             <label>Modules &amp; Notifications</label>
             <tab>mavenbird</tab>
             <resource>Mavenbird_Core::config</resource>
-             <group id="license" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
-                <label>License Configuration</label>
-                <field id="key" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
-                    <label>License Key</label>
-                    <comment>Please enter your license key here</comment>
-                </field>
-            </group>
             <group id="module_info" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Module Versions</label>            
+                <field id="validation_warning" translate="label" type="note" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Warning</label>
+                    <comment><![CDATA[<span style="color:red;font-weight:bold;">IMPORTANT: If the module validation file is missing or invalid three times, your module will be blocked.</span>]]></comment>
+                </field>
                 <field id="core_version" translate="label" type="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Installed Modules</label>
                     <frontend_model>Mavenbird\Core\Block\Adminhtml\System\Config\ModuleVersion</frontend_model>
