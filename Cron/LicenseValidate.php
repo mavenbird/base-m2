@@ -90,14 +90,14 @@ class LicenseValidate
                     "adminUsername"   => $adminUser->getUsername() ?: 'NULL',
                     "adminEmail"      => $adminUser->getEmail() ?: 'NULL',
                     "storeLanguage"   => $this->scopeConfig->getValue('general/locale/code') ?: 'en_US',
-                    "storeName"       => $storeName ?: 'NULL',
-                    "storeAddress"    => $storeAddress ?: 'NULL',
-                    "storePhone"      => $storePhone?: 'NULL',
+                    "storeName"       => $storeName ,
+                    "storeAddress"    => $storeAddress ,
+                    "storePhone"      => $storePhone,
                 ];
 
                 $this->logger->debug("License API payload for $moduleName: " . json_encode($payload));
 
-                $apiUrl = 'https://mbdev.magemoto.com/rest/V1/license/validate';
+                $apiUrl = 'https://mavenbird.com/rest/V1/license/validate';
 
                 $this->curl->addHeader("Content-Type", "application/json");
                 $this->curl->post($apiUrl, json_encode($payload));
