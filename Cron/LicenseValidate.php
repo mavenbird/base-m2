@@ -10,6 +10,7 @@ use Psr\Log\LoggerInterface;
 use Magento\Framework\Module\ModuleListInterface;
 use Magento\AdminNotification\Model\Inbox;
 use Magento\Framework\App\Config\Storage\WriterInterface;
+use Magento\Framework\Encryption\EncryptorInterface;
 
 class LicenseValidate
 {
@@ -22,6 +23,7 @@ class LicenseValidate
     protected $moduleList;
     protected $adminNotificationInbox;
     protected $configWriter;
+    protected $encryptor;
 
     public function __construct(
         StoreManagerInterface $storeManager,
@@ -32,7 +34,8 @@ class LicenseValidate
         LoggerInterface $logger,
         ModuleListInterface $moduleList,
         Inbox $adminNotificationInbox,
-        WriterInterface $configWriter
+        WriterInterface $configWriter,
+        EncryptorInterface $encryptor
     ) {
         $this->storeManager = $storeManager;
         $this->scopeConfig = $scopeConfig;
@@ -43,6 +46,7 @@ class LicenseValidate
         $this->moduleList = $moduleList;
         $this->adminNotificationInbox = $adminNotificationInbox;
         $this->configWriter = $configWriter;
+        $this->encryptor = $encryptor;
     }
 
     public function execute()
@@ -61,8 +65,10 @@ class LicenseValidate
             return;
         }
 
-        $blockedModules = [];
-        $warningModules = [];
+        // Load existing config data (one path for all)
+        $configPath = 'mavenbird_license_status/mavenbird';
+        $existingJson = $this->scopeConfig->getValue($configPath) ?? '{}';
+        $existingData = json_decode($existingJson, true) ?? [];
 
         foreach ($mavenbirdModules as $moduleName) {
             try {
@@ -76,17 +82,17 @@ class LicenseValidate
                 $payload = [
                     "moduleName"      => $moduleName,
                     "ipAddress"       => $_SERVER['SERVER_ADDR'] ?? '127.0.0.1',
-                    "country"         => $this->scopeConfig->getValue('general/country/default'),
-                    "customerEmail"   => $this->scopeConfig->getValue('trans_email/ident_general/email'),
-                    "customerDomain"  => parse_url($baseUrl, PHP_URL_HOST),
-                    "adminFirstname"  => $adminUser->getFirstname(),
-                    "adminLastname"   => $adminUser->getLastname(),
-                    "adminUsername"   => $adminUser->getUsername(),
-                    "adminEmail"      => $adminUser->getEmail(),
-                    "storeLanguage"   => $this->scopeConfig->getValue('general/locale/code'),
-                    "storeName"       => $storeName,
-                    "storeAddress"    => $storeAddress,
-                    "storePhone"      => $storePhone,
+                    "country"         => $this->scopeConfig->getValue('general/country/default') ?: 'US',
+                    "customerEmail"   => $this->scopeConfig->getValue('trans_email/ident_general/email') ?: 'NULL',
+                    "customerDomain"  => parse_url($baseUrl, PHP_URL_HOST) ?: 'NULL',
+                    "adminFirstname"  => $adminUser->getFirstname() ?: 'NULL',
+                    "adminLastname"   => $adminUser->getLastname() ?: 'NULL',
+                    "adminUsername"   => $adminUser->getUsername() ?: 'NULL',
+                    "adminEmail"      => $adminUser->getEmail() ?: 'NULL',
+                    "storeLanguage"   => $this->scopeConfig->getValue('general/locale/code') ?: 'en_US',
+                    "storeName"       => $storeName ?: 'NULL',
+                    "storeAddress"    => $storeAddress ?: 'NULL',
+                    "storePhone"      => $storePhone?: 'NULL',
                 ];
 
                 $this->logger->debug("License API payload for $moduleName: " . json_encode($payload));
@@ -110,18 +116,19 @@ class LicenseValidate
 
                     $status = $responseData['status'] ?? 'unknown';
                     $attemptCount = isset($responseData['attempt_count']) ? (int)$responseData['attempt_count'] : null;
+                    $messageHtml = $responseData['message'] ?? null;
 
-                    if (!in_array($status, ['valid', 'warning', 'blocked'])) {
-                        $status = 'unknown';
-                    }
+                    // Encrypt status and attempt
+                    $encryptedStatus = $this->encryptor->encrypt($status);
+                    $encryptedAttempts = $attemptCount !== null ? $this->encryptor->encrypt((string)$attemptCount) : null;
 
-                    // Save status to config
-                    $configPath = 'mavenbird_license_status/' . strtolower($moduleName);
-                    $statusData = [
-                        'status' => $status,
-                        'attempt_count' => $attemptCount
+                    // Save in the unified config key
+                    $key = strtolower($moduleName);
+                    $existingData[$key] = [
+                        'status' => $encryptedStatus,
+                        'attempt_count' => $encryptedAttempts,
+                        'message' => $messageHtml
                     ];
-                    $this->configWriter->save($configPath, json_encode($statusData));
                 } else {
                     $this->logger->warning("License API failed for $moduleName - HTTP $httpStatus, Response: $response");
                 }
@@ -130,45 +137,69 @@ class LicenseValidate
             }
         }
 
-        // Delete old admin messages related to license validation
+        // Save merged config
+        $this->configWriter->save($configPath, json_encode($existingData));
+
+        // Clear old admin notifications
         $this->adminNotificationInbox->getCollection()
             ->addFieldToFilter('title', ['like' => 'Module license validation%'])
             ->walk('delete');
 
-        // Rebuild grouped messages from latest config
-        foreach ($mavenbirdModules as $moduleName) {
-            $configPath = 'mavenbird_license_status/' . strtolower($moduleName);
-            $statusJson = $this->scopeConfig->getValue($configPath);
-            $statusData = is_string($statusJson) ? json_decode($statusJson, true) : [];
-            $status = $statusData['status'] ?? 'unknown';
-            $attemptCount = isset($statusData['attempt_count']) ? (int)$statusData['attempt_count'] : null;
-            $attemptText = $attemptCount ? " ({$attemptCount} attempts)" : '';
+        // Generate new admin notifications from config
+        $blockedModules = [];
+        $warningModules = [];
 
-            $shortName = str_replace('Mavenbird_', '', $moduleName);
-            $label = ucwords(preg_replace('/(?<!^)[A-Z]/', ' $0', $shortName)) . $attemptText;
+        foreach ($existingData as $moduleKey => $data) {
+            $statusEnc = $data['status'] ?? null;
+            $attemptEnc = $data['attempt_count'] ?? null;
+            $messageHtml = $data['message'] ?? '';
+
+            try {
+                $status = $this->encryptor->decrypt($statusEnc);
+                $attemptCount = $attemptEnc ? (int)$this->encryptor->decrypt($attemptEnc) : null;
+            } catch (\Exception $e) {
+                $this->logger->error("Decryption failed for $moduleKey: " . $e->getMessage());
+                continue;
+            }
+
+            $shortName = str_replace('mavenbird_', '', $moduleKey);
+            $label = ucwords(preg_replace('/(?<!^)[A-Z]/', ' $0', $shortName));
+            $attemptText = $attemptCount ? " ({$attemptCount} attempts)" : '';
+            $label .= $attemptText;
 
             if ($status === 'blocked') {
-                $blockedModules[] = $label;
+                $blockedModules[] = ['label' => $label, 'message' => $messageHtml];
             } elseif ($status === 'warning') {
-                $warningModules[] = $label;
+                $warningModules[] = ['label' => $label, 'message' => $messageHtml];
             }
         }
 
+        // Show notifications
         if (!empty($blockedModules)) {
-            $message = 'Mavenbird Notice : The following Mavenbird modules are <strong>blocked</strong>: ' . implode(', ', $blockedModules) . '. Please contact <a href="mailto:support@mavenbird.com">support@mavenbird.com</a>.';
+            $html = '<ul>';
+            foreach ($blockedModules as $mod) {
+                $html .= '<li><strong>' . $mod['label'] . '</strong>: ' . $mod['message'] . '</li>';
+            }
+            $html .= '</ul>';
+
             $this->adminNotificationInbox->addCritical(
                 __('Module license validation - Blocked Modules'),
-                $message,
+                $html,
                 '',
                 true
             );
         }
 
         if (!empty($warningModules)) {
-            $message = 'Mavenbird Notice : The following Mavenbird modules have <strong>license warnings</strong>: ' . implode(', ', $warningModules) . '. Please verify or contact <a href="mailto:support@mavenbird.com">support@mavenbird.com</a>.';
+            $html = '<ul>';
+            foreach ($warningModules as $mod) {
+                $html .= '<li><strong>' . $mod['label'] . '</strong>: ' . $mod['message'] . '</li>';
+            }
+            $html .= '</ul>';
+
             $this->adminNotificationInbox->addMajor(
                 __('Module license validation - Warning Modules'),
-                $message,
+                $html,
                 '',
                 true
             );

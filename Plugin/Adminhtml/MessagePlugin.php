@@ -6,22 +6,26 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Module\ModuleListInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Backend\App\Action;
+use Magento\Framework\Encryption\EncryptorInterface;
 
 class MessagePlugin
 {
     protected $scopeConfig;
     protected $moduleList;
     protected $messageManager;
+    protected $encryptor;
     protected $alreadyProcessed = false;
 
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         ModuleListInterface $moduleList,
-        ManagerInterface $messageManager
+        ManagerInterface $messageManager,
+        EncryptorInterface $encryptor
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->moduleList = $moduleList;
         $this->messageManager = $messageManager;
+        $this->encryptor = $encryptor;
     }
 
     public function beforeDispatch(Action $subject, RequestInterface $request)
@@ -31,53 +35,36 @@ class MessagePlugin
         }
         $this->alreadyProcessed = true;
 
-        $blockedModules = [];
-        $warningModules = [];
+        $configPath = 'mavenbird_license_status/mavenbird';
+        $statusJson = $this->scopeConfig->getValue($configPath);
+        $statusData = is_string($statusJson) ? json_decode($statusJson, true) : [];
 
-        foreach ($this->moduleList->getAll() as $module) {
-            if (strpos($module['name'], 'Mavenbird_') !== 0) {
+        if (empty($statusData)) {
+            return;
+        }
+
+        foreach ($statusData as $moduleKey => $data) {
+            $statusEnc = $data['status'] ?? null;
+            $attemptEnc = $data['attempt_count'] ?? null;
+            $message = $data['message'] ?? '';
+
+            try {
+                $status = $this->encryptor->decrypt($statusEnc);
+                $attemptCount = $attemptEnc ? (int)$this->encryptor->decrypt($attemptEnc) : null;
+            } catch (\Exception $e) {
                 continue;
             }
 
-            $configPath = 'mavenbird_license_status/' . strtolower($module['name']);
-            $statusJson = $this->scopeConfig->getValue($configPath);
-            $statusData = is_string($statusJson) ? json_decode($statusJson, true) : [];            
-
-            $status = $statusData['status'] ?? 'unknown';
-            $attemptCount = isset($statusData['attempt_count']) ? (int)$statusData['attempt_count'] : null;
+            $shortName = str_replace('mavenbird_', '', $moduleKey);
+            $label = ucwords(preg_replace('/(?<!^)[A-Z]/', ' $0', $shortName));
             $attemptText = $attemptCount ? " ({$attemptCount} attempts)" : '';
-
-            $moduleName = str_replace('Mavenbird_', '', $module['name']);
-            $label = ucwords(preg_replace('/(?<!^)[A-Z]/', ' $0', $moduleName)) . $attemptText;
+            $fullMessage = "Mavenbird Notice - $label: $message$attemptText";
 
             if ($status === 'blocked') {
-                $blockedModules[] = $label;
+                $this->messageManager->addErrorMessage($fullMessage);
             } elseif ($status === 'warning') {
-                $warningModules[] = $label;
+                $this->messageManager->addWarningMessage($fullMessage);
             }
         }
-
-        if (!empty($blockedModules)) {
-            $last = array_pop($blockedModules);
-            $formattedBlocked = empty($blockedModules)
-                ? $last
-                : implode(', ', $blockedModules) . ' and ' . $last;
-        
-            $this->messageManager->addErrorMessage(
-                __('Mavenbird Notice : The following Mavenbird modules are blocked: %1. Please contact support@mavenbird.com.', $formattedBlocked)
-            );
-        }
-        
-        if (!empty($warningModules)) {
-            $last = array_pop($warningModules);
-            $formattedWarning = empty($warningModules)
-                ? $last
-                : implode(', ', $warningModules) . ' and ' . $last;
-        
-            $this->messageManager->addWarningMessage(
-                __('Mavenbird Notice : The following Mavenbird modules have license warnings: %1. Please verify their license or contact support@mavenbird.com.', $formattedWarning)
-            );
-        }
-        
     }
 }

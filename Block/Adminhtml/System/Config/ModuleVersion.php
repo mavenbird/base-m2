@@ -5,25 +5,75 @@ use Magento\Framework\Module\ModuleListInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
+use Magento\Framework\Encryption\EncryptorInterface;
 
 class ModuleVersion extends Field
 {
     protected $moduleList;
     protected $scopeConfig;
+    protected $encryptor;
+    const STYLE_BLOCKED = '
+        display: inline-block;
+        color: #fff;
+        background-color: #d32f2f; /* deep red */
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 4px;
+        box-shadow: 0 2px 6px rgba(211, 47, 47, 0.5);
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        text-transform: uppercase;
+    ';
 
-    const STYLE_BLOCKED = 'color: #fff; background: #d32f2f; font-weight: bold; padding: 2px 8px; border-radius: 3px;';
-    const STYLE_WARNING = 'color: #fff; background: #fbc02d; font-weight: bold; padding: 2px 8px; border-radius: 3px;';
-    const STYLE_VALID = 'color: #388e3c; font-weight: bold;';
-    const STYLE_UNKNOWN = 'color: #757575;';
+    const STYLE_WARNING = '
+        display: inline-block;
+        color: #444;
+        background-color: #fff8e1; /* light yellow */
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 4px;
+        border: 1px solid #fbc02d; /* yellow border */
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        text-transform: uppercase;
+    ';
+
+    const STYLE_VALID = '
+        display: inline-block;
+        color: #2e7d32; /* dark green */
+        background-color: #e8f5e9; /* light green */
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 4px;
+        border: 1px solid #2e7d32;
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        text-transform: uppercase;
+    ';
+
+    const STYLE_UNKNOWN = '
+        display: inline-block;
+        color: #757575;
+        background-color: #f5f5f5;
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 4px;
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        text-transform: uppercase;
+    ';
+
 
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         ModuleListInterface $moduleList,
         ScopeConfigInterface $scopeConfig,
+        EncryptorInterface $encryptor,
         array $data = []
     ) {
         $this->moduleList = $moduleList;
         $this->scopeConfig = $scopeConfig;
+        $this->encryptor = $encryptor;
         parent::__construct($context, $data);
     }
 
@@ -40,6 +90,10 @@ class ModuleVersion extends Field
             </thead>
             <tbody>';
 
+        // Load entire license status JSON once
+        $licenseJson = $this->scopeConfig->getValue('mavenbird_license_status/mavenbird');
+        $licenseData = is_string($licenseJson) ? json_decode($licenseJson, true) : [];
+
         foreach ($this->moduleList->getAll() as $module) {
             if (strpos($module['name'], 'Mavenbird_') !== 0) {
                 continue;
@@ -51,12 +105,14 @@ class ModuleVersion extends Field
 
             $version = isset($module['setup_version']) ? $this->escapeHtml($module['setup_version']) : 'N/A';
 
-            $licenseInfo = $this->getLicenseStatusHtml($module['name']);
+            // Lookup license info for this module (key is lowercase module name)
+            $moduleKey = strtolower($module['name']);
+            $statusHtml = $this->getLicenseStatusHtml($moduleKey, $licenseData);
 
             $html .= '<tr>
                         <td>' . $displayName . '</td>
                         <td>' . $version . '</td>
-                        <td>' . $licenseInfo . '</td>
+                        <td>' . $statusHtml . '</td>
                       </tr>';
         }
 
@@ -66,34 +122,43 @@ class ModuleVersion extends Field
     }
 
     /**
-     * Get formatted license status HTML
+     * Get formatted license status HTML for a single module key using license data array
      */
-    private function getLicenseStatusHtml(string $moduleName): string
+    private function getLicenseStatusHtml(string $moduleKey, array $licenseData): string
     {
-        $configPath = 'mavenbird_license_status/' . strtolower($moduleName);
-        $statusJson = $this->scopeConfig->getValue($configPath);
-        $statusData = is_string($statusJson) ? json_decode($statusJson, true) : [];
+        if (!isset($licenseData[$moduleKey])) {
+            return '<span style="' . self::STYLE_UNKNOWN . '">' . __('Unknown') . '</span>';
+        }
 
-        $status = $statusData['status'] ?? 'unknown';
-        $attempts = $statusData['attempt_count'] ?? null;
+        $data = $licenseData[$moduleKey];
+        $statusEnc = $data['status'] ?? null;
+        $attemptEnc = $data['attempt_count'] ?? null;
 
-        $attemptText = $attempts !== null ? ' (' . (int)$attempts . ' attempts)' : '';
+        try {
+            $status = $statusEnc ? $this->encryptor->decrypt($statusEnc) : 'unknown';
+            $attempts = $attemptEnc ? (int)$this->encryptor->decrypt($attemptEnc) : null;
+        } catch (\Exception $e) {
+            $status = 'unknown';
+            $attempts = null;
+        }
+
+        $attemptText = $attempts !== null ? ' (' . $attempts . ' attempts)' : '';
 
         switch ($status) {
             case 'blocked':
-                $label = 'Blocked' . $attemptText;
+                $label = __('Blocked') . $attemptText;
                 $style = self::STYLE_BLOCKED;
                 break;
             case 'warning':
-                $label = 'Warning' . $attemptText;
+                $label = __('Warning') . $attemptText;
                 $style = self::STYLE_WARNING;
                 break;
             case 'valid':
-                $label = 'Valid';
+                $label = __('Valid');
                 $style = self::STYLE_VALID;
                 break;
             default:
-                $label = 'Unknown';
+                $label = __('Unknown');
                 $style = self::STYLE_UNKNOWN;
         }
 
