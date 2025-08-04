@@ -1,0 +1,66 @@
+<!--@subject License Alert Notification @-->
+
+<table width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Segoe UI', Roboto, Arial, sans-serif; background-color: #f4f4f4; padding: 30px;">
+    <tr>
+        <td align="center">
+            <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.05); overflow: hidden;">
+                <!-- Header -->
+                <tr>
+                    <td style="background-color: #28a745; color: #ffffff; padding: 25px; text-align: center;">
+                        <h1 style="margin: 0; font-size: 22px;">License Alert Notification</h1>
+                    </td>
+                </tr>
+
+                <!-- Body -->
+                <tr>
+                    <td style="padding: 30px 35px;">
+                        <p style="font-size: 16px; color: #333333; margin-bottom: 20px;">
+                            Hi {{var adminName}},
+                        </p>
+
+                        <p style="font-size: 15px; color: #333333; line-height: 1.6;">
+                            The following modules have reported issues on your store:
+                        </p>
+
+                        {{if warning_modules}}
+                        <h3 style="color: #bc8332; margin-top: 30px;">Warning Modules</h3>
+                        <div style="background-color: #fff8e1; border-left: 4px solid #bc8332; padding: 15px 20px; margin: 10px 0 5px 0; border-radius: 6px; font-size: 14px; color: #8a6d3b; white-space: pre-line;">
+                            {{var warning_modules|raw}}
+                        </div>
+                        <p style="font-size: 13px; color: #8a6d3b; margin-top: 10px;">
+                            If you believe this is incorrect, please <a href="mailto:support@mavenbird.com" style="color: #28a745; text-decoration: none;"><strong>contact support</strong></a>.
+                        </p>
+                        {{/if}}
+
+                        {{if blocked_modules}}
+                        <h3 style="color: #dc3545; margin-top: 30px;">Blocked Modules</h3>
+                        <div style="background-color: #f8d7da; border-left: 4px solid #dc3545; padding: 15px 20px; margin: 10px 0 5px 0; border-radius: 6px; font-size: 14px; color: #721c24; white-space: pre-line;">
+                            {{var blocked_modules|raw}}
+                        </div>
+                        <p style="font-size: 13px; color: #721c24; margin-top: 10px;">
+                            Immediate action is required. <a href="mailto:support@mavenbird.com" style="color: #dc3545; text-decoration: none;"><strong>Contact support</strong></a> if you're unable to resolve this.
+                        </p>
+                        {{/if}}
+
+                        <p style="font-size: 15px; color: #333333; margin-top: 25px;">
+                            Please log in to the admin panel to review and resolve these issues as soon as possible.
+                        </p>
+
+                        <p style="font-size: 15px; color: #333333; margin-top: 30px;">
+                            Best regards,<br/>
+                            <strong>Mavenbird Team</strong>
+                        </p>
+                    </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                    <td style="background-color: #ffffff; padding: 15px; text-align: center; font-size: 13px; color: #000000;">
+                        &copy; 2025 Mavenbird. All rights reserved.
+                        <a href="https://www.mavenbird.com" style="color: #28a745; text-decoration: none;">Visit our website</a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>

@@ -11,6 +11,11 @@ use Magento\Framework\Module\ModuleListInterface;
 use Magento\AdminNotification\Model\Inbox;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\Encryption\EncryptorInterface;
+use Magento\Framework\Mail\Template\TransportBuilder;
+use Magento\Store\Model\ScopeInterface;
+use Magento\Email\Model\Template\Config as EmailConfig;
+use Magento\Framework\App\Area;
+use Magento\Framework\App\State;
 
 class LicenseValidate
 {
@@ -24,6 +29,8 @@ class LicenseValidate
     protected $adminNotificationInbox;
     protected $configWriter;
     protected $encryptor;
+    protected $transportBuilder;
+    protected $state;
 
     public function __construct(
         StoreManagerInterface $storeManager,
@@ -35,7 +42,9 @@ class LicenseValidate
         ModuleListInterface $moduleList,
         Inbox $adminNotificationInbox,
         WriterInterface $configWriter,
-        EncryptorInterface $encryptor
+        EncryptorInterface $encryptor,
+        TransportBuilder $transportBuilder,
+        State $state,
     ) {
         $this->storeManager = $storeManager;
         $this->scopeConfig = $scopeConfig;
@@ -47,6 +56,8 @@ class LicenseValidate
         $this->adminNotificationInbox = $adminNotificationInbox;
         $this->configWriter = $configWriter;
         $this->encryptor = $encryptor;
+        $this->transportBuilder = $transportBuilder;
+        $this->state = $state;
     }
 
     public function execute()
@@ -97,7 +108,7 @@ class LicenseValidate
 
                 $this->logger->debug("License API payload for $moduleName: " . json_encode($payload));
 
-                $apiUrl = 'https://mavenbird.com/rest/V1/license/validate';
+                $apiUrl = 'https://app.mavenbird.test/rest/V1/license/validate';
 
                 $this->curl->addHeader("Content-Type", "application/json");
                 $this->curl->post($apiUrl, json_encode($payload));
@@ -203,6 +214,60 @@ class LicenseValidate
                 '',
                 true
             );
+        }
+   
+        if (!empty($blockedModules) || !empty($warningModules)) {
+            try {
+                $this->state->emulateAreaCode(Area::AREA_ADMINHTML, function () use ($blockedModules, $warningModules) {
+
+                    $maxAttempts = 0;
+                    foreach (array_merge($blockedModules, $warningModules) as $mod) {
+                        $attemptEnc = $existingData[strtolower('mavenbird_' . str_replace(' ', '', $mod['label']))]['attempt_count'] ?? null;
+                        if ($attemptEnc) {
+                            try {
+                                $attempt = (int) $this->encryptor->decrypt($attemptEnc);
+                                if ($attempt > $maxAttempts) {
+                                    $maxAttempts = $attempt;
+                                }
+                            } catch (\Exception $e) {
+                                $this->logger->error("Failed to decrypt attempt count for email: " . $e->getMessage());
+                            }
+                        }
+                    }
+                    $warningHtml = '';
+                    foreach ($warningModules as $mod) {
+                        $warningHtml .= '<li><strong>' . $mod['label'] . '</strong></li>';
+                    }
+
+                    $blockedHtml = '';
+                    foreach ($blockedModules as $mod) {
+                        $blockedHtml .= '<li><strong>' . $mod['label'] . '</strong></li>';
+                    }
+
+                    $adminEmail = $this->scopeConfig->getValue('trans_email/ident_general/email', ScopeInterface::SCOPE_STORE);
+                    $adminName = $this->scopeConfig->getValue('trans_email/ident_general/name', ScopeInterface::SCOPE_STORE);
+
+                    $transport = $this->transportBuilder
+                        ->setTemplateIdentifier('mavenbird_license_alert') 
+                        ->setTemplateOptions([
+                            'area' => Area::AREA_ADMINHTML,
+                            'store' => 0
+                        ])
+                        ->setTemplateVars([
+                            'warning_modules' => $warningHtml,
+                            'blocked_modules' => $blockedHtml,
+                            'attemptCount' => $maxAttempts,
+                            'adminName' => $adminName,
+                        ])
+                        ->setFromByScope('general') // Uses General Email Sender config
+                        ->addTo($adminEmail, $adminName)
+                        ->getTransport();
+
+                    $transport->sendMessage();
+                });
+            } catch (\Exception $e) {
+                $this->logger->error('Failed to send license email: ' . $e->getMessage());
+            }
         }
 
         $this->logger->info('LicenseValidate cron job completed');
