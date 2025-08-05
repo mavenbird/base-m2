@@ -20,8 +20,10 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    
     <type name="Magento\Backend\Block\Menu">
         <plugin name="Mavenbird_Core:menu" type="Mavenbird\Core\Plugin\Backend\Block\Menu"/>
+    </type>
+     <type name="Magento\Backend\App\Action">
+        <plugin name="mavenbird_license_status_message" type="Mavenbird\Core\Plugin\Adminhtml\MessagePlugin" sortOrder="10"/>
     </type>
 </config>

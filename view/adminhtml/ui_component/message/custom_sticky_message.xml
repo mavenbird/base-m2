@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<message name="mavenbird_sticky_message" type="notice" translate="false">
+    <body>{{message}}</body>
+</message>

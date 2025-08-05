@@ -8,15 +8,32 @@
             <label>Modules &amp; Notifications</label>
             <tab>mavenbird</tab>
             <resource>Mavenbird_Core::config</resource>
-             <group id="license" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
-                <label>License Configuration</label>
-                <field id="key" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
-                    <label>License Key</label>
-                    <comment>Please enter your license key here</comment>
-                </field>
-            </group>
             <group id="module_info" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Module Versions</label>            
+            <field id="validation_warning" translate="label" type="note" sortOrder="5" showInDefault="1">
+               <comment><![CDATA[
+                    <div style="
+                        background-color: #e6f4ea;
+                        border-left: 6px solid #28a745;
+                        padding: 15px 20px;
+                        margin-top: 15px;
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        font-size: 14px;
+                        line-height: 1.6;
+                        color: #2d4831;
+                        border-radius: 6px;
+                    ">
+                        <strong style="color: #218838; font-size: 15px;">License Validation Warning</strong><br/>
+                        If the license fails to validate <strong>3 times in a row</strong>, this module will be <strong style="color: #c82333;">automatically disabled</strong>.<br/><br/>
+                        <span>
+                            Need help? <a href="https://www.mavenbird.com/contact" target="_blank" style="color: #155724; font-weight: bold; text-decoration: underline;">
+                                Contact Mavenbird Support
+                            </a>
+                        </span>
+                    </div>
+                ]]></comment>
+
+            </field>
                 <field id="core_version" translate="label" type="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Installed Modules</label>
                     <frontend_model>Mavenbird\Core\Block\Adminhtml\System\Config\ModuleVersion</frontend_model>
