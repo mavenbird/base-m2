@@ -108,7 +108,7 @@ class LicenseValidate
 
                 $this->logger->debug("License API payload for $moduleName: " . json_encode($payload));
 
-                $apiUrl = 'https://app.mavenbird.test/rest/V1/license/validate';
+                $apiUrl = 'https://www.mavenbird.com/rest/V1/license/validate';
 
                 $this->curl->addHeader("Content-Type", "application/json");
                 $this->curl->post($apiUrl, json_encode($payload));
