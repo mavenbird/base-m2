@@ -108,7 +108,7 @@ class LicenseValidate
 
                 $this->logger->debug("License API payload for $moduleName: " . json_encode($payload));
 
-                $apiUrl = 'https://app.mavenbird.test/rest/V1/license/validate';
+                $apiUrl = 'https://www.mavenbird.com/rest/V1/license/validate';
 
                 $this->curl->addHeader("Content-Type", "application/json");
                 $this->curl->post($apiUrl, json_encode($payload));
@@ -128,7 +128,16 @@ class LicenseValidate
                     $status = $responseData['status'] ?? 'unknown';
                     $attemptCount = isset($responseData['attempt_count']) ? (int)$responseData['attempt_count'] : null;
                     $messageHtml = $responseData['message'] ?? null;
+                  
 
+                  // Also load old modules data if exists to merge
+                    $modules = $responseData['modules'] ?? null;
+                    $configPathModules = 'mavenbird_license/mavenbird/modules';
+                    $existingJsonModules = $this->scopeConfig->getValue($configPathModules) ?? '{}';
+                    $existingDataModules = json_decode($existingJsonModules, true) ?? [];
+                    $existingDataModules = array_merge($existingDataModules, $modules ?? []);
+                    $this->configWriter->save($configPathModules, json_encode($existingDataModules));
+                    
                     // Encrypt status and attempt
                     $encryptedStatus = $this->encryptor->encrypt($status);
                     $encryptedAttempts = $attemptCount !== null ? $this->encryptor->encrypt((string)$attemptCount) : null;
