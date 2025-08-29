@@ -92,7 +92,7 @@ class LicenseValidate
 
                 $payload = [
                     "moduleName"      => $moduleName,
-                    "ipAddress"       => $_SERVER['SERVER_ADDR'] ?? '127.0.0.1',
+                    "ipAddress"       => $this->getServerIp(),
                     "country"         => $this->scopeConfig->getValue('general/country/default') ?: 'US',
                     "customerEmail"   => $this->scopeConfig->getValue('trans_email/ident_general/email') ?: 'NULL',
                     "customerDomain"  => parse_url($baseUrl, PHP_URL_HOST) ?: 'NULL',
@@ -280,5 +280,29 @@ class LicenseValidate
         }
 
         $this->logger->info('LicenseValidate cron job completed');
+    }
+
+    private function getServerIp()
+    {
+        // Try different server variables
+        $serverVars = [
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_REAL_IP',
+            'SERVER_ADDR',
+            'SERVER_NAME'
+        ];
+
+        foreach ($serverVars as $var) {
+            if (!empty($_SERVER[$var])) {
+                if ($var === 'HTTP_X_FORWARDED_FOR') {
+                    $ips = explode(',', $_SERVER[$var]);
+                    return trim($ips[0]);
+                }
+                return $_SERVER[$var];
+            }
+        }
+
+        // Fallback to localhost if nothing else works
+        return '127.0.0.1';
     }
 }
