@@ -20,5 +20,5 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/Module/etc/module.xsd">
-	<module name="Mavenbird_Core" setup_version="1.0.6"></module>
+	<module name="Mavenbird_Core" setup_version="1.0.7"></module>
 </config>
