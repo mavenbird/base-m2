@@ -92,7 +92,7 @@ class LicenseValidate
 
                 $payload = [
                     "moduleName"      => $moduleName,
-                    "ipAddress"       => $this->getServerIp(),
+                    "ipAddress"       => $_SERVER['SERVER_ADDR'] ?? '127.0.0.1',
                     "country"         => $this->scopeConfig->getValue('general/country/default') ?: 'US',
                     "customerEmail"   => $this->scopeConfig->getValue('trans_email/ident_general/email') ?: 'NULL',
                     "customerDomain"  => parse_url($baseUrl, PHP_URL_HOST) ?: 'NULL',
@@ -129,15 +129,28 @@ class LicenseValidate
                     $attemptCount = isset($responseData['attempt_count']) ? (int)$responseData['attempt_count'] : null;
                     $messageHtml = $responseData['message'] ?? null;
                   
-
-                  // Also load old modules data if exists to merge
+                   // Save modules data fresh from API (remove old values first)
                     $modules = $responseData['modules'] ?? null;
                     $configPathModules = 'mavenbird_license/mavenbird/modules';
-                    $existingJsonModules = $this->scopeConfig->getValue($configPathModules) ?? '{}';
-                    $existingDataModules = json_decode($existingJsonModules, true) ?? [];
-                    $existingDataModules = array_merge($existingDataModules, $modules ?? []);
-                    $this->configWriter->save($configPathModules, json_encode($existingDataModules));
-                    
+
+                    // Always clear old value if exists
+                    $this->configWriter->delete($configPathModules);
+
+                    if (!empty($modules)) {
+                        $this->configWriter->save($configPathModules, json_encode($modules));
+                    }
+                    // license_info 
+                  $licenseInfo = $responseData['license_info'] ?? null;
+                    $configPathlicenseInfo  = 'mavenbird_license/mavenbird/license_info';
+
+                    // Always clear old value if exists
+                    $this->configWriter->delete($configPathlicenseInfo);
+
+                    if (!empty($licenseInfo)) {
+                        // Save the HTML directly, no json_encode
+                        $this->configWriter->save($configPathlicenseInfo, $licenseInfo);
+                    }
+
                     // Encrypt status and attempt
                     $encryptedStatus = $this->encryptor->encrypt($status);
                     $encryptedAttempts = $attemptCount !== null ? $this->encryptor->encrypt((string)$attemptCount) : null;
@@ -280,29 +293,5 @@ class LicenseValidate
         }
 
         $this->logger->info('LicenseValidate cron job completed');
-    }
-
-    private function getServerIp()
-    {
-        // Try different server variables
-        $serverVars = [
-            'HTTP_X_FORWARDED_FOR',
-            'HTTP_X_REAL_IP',
-            'SERVER_ADDR',
-            'SERVER_NAME'
-        ];
-
-        foreach ($serverVars as $var) {
-            if (!empty($_SERVER[$var])) {
-                if ($var === 'HTTP_X_FORWARDED_FOR') {
-                    $ips = explode(',', $_SERVER[$var]);
-                    return trim($ips[0]);
-                }
-                return $_SERVER[$var];
-            }
-        }
-
-        // Fallback to localhost if nothing else works
-        return '127.0.0.1';
     }
 }
