@@ -1,0 +1,63 @@
+.mb-block-mavenbird {
+    background: #F8F8F8 no-repeat 8px;
+    border: 1px solid #E5E5E5;
+    border-left: 2px solid #00a046;
+    font-size: 12px;
+    color: #303030;
+    margin-bottom: 0;
+    padding: 1.5rem;
+    background-size: 55px;
+}
+
+.mb-block-mavenbird strong {
+    font-weight: 600;
+    color: #514943;
+}
+
+.mb-block-mavenbird p {
+    font-size: 12px;
+    padding: 0 0 0.3em;
+}
+
+.mb-links {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.mb-link-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mb-link-item a {
+    color: #6D6761;
+    font-size: 12px;
+    display: inline-block;
+    margin-top: 3px;
+}
+
+.mb-block-mavenbird .helpbutton {
+    padding: 10px 15px;
+    width: 100px;
+    height: 31px;
+    float: right;
+    background: url('../images/mavenbird-logo.webp') #F8F8F8;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.mb-block-mavenbird .icon2 {
+    background: url('../images/icons.png') no-repeat scroll -30px -70px;
+    width: 36px;
+    height: 25px;
+}
+
+.mb-block-mavenbird .icon3 {
+    background: url('../images/icons.png') no-repeat scroll -20px -129px;
+    width: 47px;
+    height: 25px;
+}
