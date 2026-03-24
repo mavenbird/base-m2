@@ -35,7 +35,6 @@
              module="Mavenbird_Core"
              translate="title"
              sortOrder="9999"
-             action="core/marketplace"
              parent="Magento_Backend::mbmenu"
              resource="Mavenbird_Core::marketplace"/>  
     </menu>
