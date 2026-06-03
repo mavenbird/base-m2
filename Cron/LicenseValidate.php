@@ -138,10 +138,24 @@ class LicenseValidate
                   // Also load old modules data if exists to merge
                     $modules = $responseData['modules'] ?? null;
                     $configPathModules = 'mavenbird_license/mavenbird/modules';
-                    $existingJsonModules = $this->scopeConfig->getValue($configPathModules) ?? '{}';
-                    $existingDataModules = json_decode($existingJsonModules, true) ?? [];
-                    $existingDataModules = array_merge($existingDataModules, $modules ?? []);
-                    $this->configWriter->save($configPathModules, json_encode($existingDataModules));
+                    
+                    // Always clear old value if exists
+                    $this->configWriter->delete($configPathModules);
+
+                    if (!empty($modules)) {
+                        $this->configWriter->save($configPathModules, json_encode($modules));
+                    }
+                    // license_info 
+                    $licenseInfo = $responseData['license_info'] ?? null;
+                    $configPathlicenseInfo  = 'mavenbird_license/mavenbird/license_info';
+
+                    // Always clear old value if exists
+                    $this->configWriter->delete($configPathlicenseInfo);
+
+                    if (!empty($licenseInfo)) {
+                        // Save the HTML directly, no json_encode
+                        $this->configWriter->save($configPathlicenseInfo, $licenseInfo);
+                    }
                     
                     // Encrypt status and attempt
                     $encryptedStatus = $this->encryptor->encrypt($status);
