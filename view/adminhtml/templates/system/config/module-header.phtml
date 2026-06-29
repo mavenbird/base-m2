@@ -1,0 +1,41 @@
+<?php
+/**
+ * Mavenbird Core - Module Header Template
+ *
+ * @category Mavenbird
+ * @package Mavenbird_Core
+ * @author Mavenbird Team
+ *
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Magento\Backend\Block\Template $block
+ */
+?>
+
+<div id="mavenbird-config-header" class="mb-block-mavenbird" style="display: none;">
+    <a href="<?= $escaper->escapeUrl('https://mavenbird.com') ?>" target="_blank" class="helpbutton"></a>
+    <p>
+        <strong><?= $escaper->escapeHtml(__('Proudly developed by Mavenbird — India’s #1 Magento Ecommerce Agency and Official Hyvä Bronze Partner.')) ?></strong>
+    </p>
+    <p class="mb-module-version-info" style="font-size: 11px; margin-top: 4px; color: #6D6761;">
+        <strong><?= $escaper->escapeHtml(__('Module:')) ?></strong> <?= $escaper->escapeHtml($block->getData('mavenbird_module_name')) ?> | <strong><?= $escaper->escapeHtml(__('Version:')) ?></strong> <?= $escaper->escapeHtml($block->getData('mavenbird_module_version')) ?>
+    </p>
+    <div class="mb-links">
+        <div class="mb-link-item">
+            <span class="icon2"></span>
+            <a href="<?= $escaper->escapeUrl('https://mavenbird.com/support') ?>" target="_blank"><?= $escaper->escapeHtml(__('Extension Support')) ?></a>
+        </div>
+        <div class="mb-link-item">
+            <span class="icon3"></span>
+            <a href="<?= $escaper->escapeUrl($block->getData('mavenbird_guide_url')) ?>" target="_blank"><?= $escaper->escapeHtml(__('Mavenbird Guide')) ?></a>
+        </div>
+    </div>
+</div>
+
+<script>
+require(['jquery', 'domReady!'], function($) {
+    var firstSection = $('.section-config').first();
+    if (firstSection.length) {
+        $('#mavenbird-config-header').insertBefore(firstSection).show();
+    }
+});
+</script>

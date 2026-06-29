@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Mavenbird Core - Dependency Injection Configuration
+ *
+ * @author Mavenbird Team
+ * @package Mavenbird_Core
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Preference to add Mavenbird module header to all configuration sections (more reliable than plugin for this case) -->
+    <type name="Magento\Config\Block\System\Config\Form">
+        <plugin name="mavenbird_core_add_module_header" type="Mavenbird\Core\Plugin\System\Config\FormAfterToHtml" />
+    </type>
+</config>
