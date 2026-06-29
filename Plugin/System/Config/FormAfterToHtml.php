@@ -28,7 +28,7 @@ class FormAfterToHtml
         'blog' => [
             'module_name'  => 'Mavenbird_Blog',
             'display_name' => 'Ultimate Blog',
-            'guide_url'    => 'https://mavenbird.com/guide/docs/ai_content_generator'
+            // 'guide_url'    => 'https://mavenbird.com/guide/docs/ai_content_generator'
         ],
         'order_details' => [
             'module_name'  => 'Mavenbird_OrderInformation',
