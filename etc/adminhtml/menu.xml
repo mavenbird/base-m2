@@ -36,6 +36,7 @@
              translate="title"
              sortOrder="9999"
              parent="Magento_Backend::mbmenu"
+             action="mavenbird_core/marketplace/index"
              resource="Mavenbird_Core::marketplace"/>  
     </menu>
 </config>
